@@ -1,76 +1,52 @@
 from turtle import Turtle, Screen
 import random
 
-MOVE_STEP = 10
-TURN_STEP = 10
-COLORS = ["white", "red", "orange", "yellow", "green", "cyan", "violet"]
-
-tee = Turtle()
-tee.speed(0)
-tee.pencolor(random.choice(COLORS))
-tee.pensize(1)
-
 screen = Screen()
+screen.setup(width=550, height=450)
 screen.bgcolor("black")
-screen.title("Turtle Draw")
 
+RACE_COLORS = ["yellow", "green", "cyan", "violet"]
+print(" | ".join(RACE_COLORS))
+user_bet = screen.textinput(title="Place your bet",
+                            prompt=f"Pick a color from: {' | '.join(RACE_COLORS)}\n\nYour choice: ").lower()
 
-color_index = 0
-pen_size = 1
+if user_bet in RACE_COLORS:
+    print("Valid choice")
+else:
+    print("That color is not in the race!")
 
-def move_forward():
-    tee.forward(MOVE_STEP)
+all_turtles = []
 
-def move_backward():
-    tee.backward(MOVE_STEP)
+for color in RACE_COLORS:
+    new_turtle = Turtle(shape="turtle")
+    new_turtle.color(color)
+    all_turtles.append(new_turtle)
 
-def turn_left():
-    tee.left(TURN_STEP)
+# for i in all_turtles:
+#     print(i.pencolor())
+height = 450
+y_spacing = height / 4
 
-def turn_right():
-    tee.right(TURN_STEP)
+for index, turtle in enumerate(all_turtles):
+    # print(index, turtle)
+    turtle.penup()
+    turtle.goto(-230, (index * y_spacing) - (height / 2) + (y_spacing / 2))
+    turtle.pendown()
 
-def toggle_pen():
-    if tee.isdown():
-        tee.penup()
-    else:
-        tee.pendown()
+race_on = True
 
-def increase_size():
-    global pen_size
-    pen_size = min(pen_size + 1, 20)
-    tee.pensize(pen_size)
+while race_on:
+    for turtle in all_turtles:
+        turtle.forward(random.randint(1, 10))
 
-def decrease_size():
-    global pen_size
-    pen_size = max(pen_size - 1, 1)
-    tee.pensize(pen_size)
+        if turtle.xcor() >= 230:
+            race_on = False
+            winner_color = turtle.pencolor()
+            break
 
-def change_color():
-    global color_index
-    color_index = (color_index + 1) % len(COLORS)
-    tee.pencolor(random.choice(COLORS))
-
-def clear():
-    global pen_size, color_index
-    tee.clear()
-    tee.penup()
-    tee.home()
-    tee.pendown()
-    pen_size = 1
-    color_index = 0
-    tee.pensize(pen_size)
-    tee.pencolor(random.choice(COLORS))
-
-screen.listen()
-screen.onkey(key="w", fun=move_forward)
-screen.onkey(key="s", fun=move_backward)
-screen.onkey(key="a", fun=turn_left)
-screen.onkey(key="d", fun=turn_right)
-screen.onkey(key="p", fun=toggle_pen)
-screen.onkey(key="Up", fun=increase_size)
-screen.onkey(key="Down", fun=decrease_size)
-screen.onkey(key="space", fun=change_color)
-screen.onkey(key="c", fun=clear)
+if user_bet == winner_color:
+    print("You won the bet!")
+else:
+    print(f"You lost! The winner was {winner_color}")
 
 screen.exitonclick()
