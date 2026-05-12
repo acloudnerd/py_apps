@@ -1,7 +1,7 @@
 from turtle import Turtle
-import random
 
-ORIGIN = (0,0)
+ORIGIN = (0, 0)
+
 
 class Ball(Turtle):
     def __init__(self):
@@ -10,13 +10,23 @@ class Ball(Turtle):
         self.goto(ORIGIN)
         self.color("yellow")
         self.penup()
-        self.move()
+        self.x_move = 10
+        self.y_move = 10
+        self.move_speed = 0.1
 
     def move(self):
-        # random_x = random.randint(-280, 280)
-        # random_y = random.randint(-280, 280)
-        # self.goto(random_x, random_y)
-        new_x = self.xcor() + 10
-        new_y = self.ycor() + 10
+        new_x = self.xcor() + self.x_move
+        new_y = self.ycor() + self.y_move
         self.goto(new_x, new_y)
 
+    def bounce_y(self):
+        self.y_move *= -1
+
+    def bounce_x(self):
+        self.x_move *= -1
+        self.move_speed *= 0.9
+
+    def reset_position(self):
+        self.goto(0, 0)
+        self.move_speed = 0.1
+        self.bounce_x()
