@@ -41,4 +41,4 @@ while len(guessed_states) < 50:
         s.goto(state_data.x.item(), state_data.y.item())
         s.write(answer_state)
 
-# screen.mainloop()
+screen.mainloop()
