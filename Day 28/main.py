@@ -13,11 +13,21 @@ SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 FONT_TUPLE = (FONT_NAME, 50, "bold")
 reps = 0
+timer = None
+
 
 # ---------------------------- TIMER RESET ------------------------------- #
 def reset_timer():
-    count_down(0)
-# ---------------------------- TIMER MECHANISM ------------------------------- # 
+    window.after_cancel(timer)
+    canvas.itemconfig(timer_text, text="00:00")
+    title_label.config(text="Timer")
+    check_marks.config(text="")
+    global  reps
+    reps = 0
+
+
+
+# ---------------------------- TIMER MECHANISM ------------------------------- #
 def start_timer():
     global reps
     reps += 1
@@ -35,6 +45,8 @@ def start_timer():
     else:
         title_label.config(text="Busy Working", fg=RED, font=(FONT_NAME, 50, "bold"), bg=PINK)
         count_down(work_sec)
+
+
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 
 def count_down(count):
@@ -44,21 +56,22 @@ def count_down(count):
         count_sec = f"0{count_sec}"
     canvas.itemconfig(timer_text, text=f"{count_min}:{count_sec}")
     if count > 0:
-        print(count)
-        window.after(1000, count_down, count - 1)
+        global timer
+        timer = window.after(1000, count_down, count - 1)
     else:
         start_timer()
+        marks = ""
+        work_sessions = math.floor(reps / 2)
+        for _ in range(work_sessions):
+            marks += "✔"
+        check_marks.config(text=marks)
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title("Lufuno-ro")
 window.config(padx=100, pady=10, bg=PINK)
 window.resizable(False, False)
-
-###############
-
-############
-
 
 title_label = Label(text="Timer", fg=RED, font=(FONT_NAME, 50, "bold"), bg=PINK)
 title_label.grid(column=1, row=0)
@@ -74,13 +87,12 @@ canvas.create_image(CANVAS_W // 2, CANVAS_H // 2, image=lufuno_img)
 timer_text = canvas.create_text(CANVAS_W // 2, CANVAS_H // 2 + 50, text="00:00", font=FONT_TUPLE, fill=RED)
 canvas.grid(column=1, row=1)
 
-
 start_button = Button(text="Start", highlightthickness=0, command=start_timer)
 start_button.grid(column=0, row=1)
 reset_button = Button(text="Reset", highlightthickness=0, command=reset_timer)
 reset_button.grid(column=2, row=1)
 
-check_marks = Label(text="✔️", fg=GREEN, bg=PINK, highlightthickness=0)
+check_marks = Label(fg=GREEN, bg=PINK, highlightthickness=0)
 check_marks.grid(column=1, row=2)
 
 window.mainloop()
