@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 from tkinter import messagebox
 import random
+import pyperclip
 
 # constants
 CANVAS_W, CANVAS_H = 200, 200
@@ -30,8 +31,10 @@ def pswd_generator():
 
     # join the characters into the final password string
     password = "".join(password_list)
+    password_textbox.insert(0, password)
+    pyperclip.copy(password)
 
-    print(f"Your password is: {password}")
+    # print(f"Your password is: {password}")
 
 
 
