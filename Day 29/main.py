@@ -1,10 +1,38 @@
 from tkinter import *
 from PIL import Image, ImageTk
 from tkinter import messagebox
+import random
 
 # constants
 CANVAS_W, CANVAS_H = 200, 200
 WHITE = "#FFFFFF"
+
+# random password generator
+
+def pswd_generator():
+
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
+
+    nr_letters = random.randint(8, 10)
+    nr_symbols = random.randint(2, 4)
+    nr_numbers = random.randint(2, 4)
+
+    password_list = []
+
+    # build the password parts using list comprehensions
+    password_list = [random.choice(letters) for _ in range(nr_letters)] \
+        + [random.choice(symbols) for _ in range(nr_symbols)] \
+        + [random.choice(numbers) for _ in range(nr_numbers)]
+
+    random.shuffle(password_list)
+
+    # join the characters into the final password string
+    password = "".join(password_list)
+
+    print(f"Your password is: {password}")
+
 
 
 # save input data to a file
@@ -83,7 +111,7 @@ password_textbox = Entry(window, show="*")
 password_textbox.grid(row=4, column=1)
 
 # generate password button
-generate_password = Button(text="Generate password")
+generate_password = Button(text="Generate password", command=pswd_generator)
 generate_password.grid(row=4, column=2, sticky="ew")
 
 # add password to the list
