@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 from tkinter import messagebox
 import random
 import pyperclip
+import json
 
 # constants
 CANVAS_W, CANVAS_H = 200, 200
@@ -54,9 +55,26 @@ def save():
     )
 
     if is_okay:
-        with open("data.txt", "a") as f:
-            f.write(website + " | " + username + " | " + password + "\n")
-        clear()
+        new_data = {
+            website: {
+                "email": username,
+                "password": password,
+            }
+        }
+
+        try:
+            with open("data.json", "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = {}
+
+        else:
+            data.update(new_data)
+
+            with open("data.json", "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=4)
+        finally:
+            clear()
 
 
 # clear the fields
@@ -75,6 +93,15 @@ def validations(website, username, password):
         )
         return False
     return True
+
+def search():
+    search_text = website_textbox.get()
+    with open("data.json", "r", encoding="utf-8") as file:
+                data = json.load(file)
+    for website_name in data:
+         if website_name == search_text:
+              print(f"Found match: {data[website_name]} for {website_name}")
+    # return True
     
 
 # creating the window
@@ -98,7 +125,7 @@ website_label = Label(window, text="Website:")
 website_label.grid(row=2, column=0)
 website_textbox = Entry(window)
 website_textbox.focus()
-website_textbox.grid(row=2, column=1, columnspan=3, sticky="ew")
+website_textbox.grid(row=2, column=1, sticky="ew")
 
 # email
 username_label = Label(window, text="Username/Email:")
@@ -120,5 +147,9 @@ generate_password.grid(row=4, column=2, sticky="ew")
 # add password to the list
 add_pswd = Button(text="Add", command=save)
 add_pswd.grid(row=5, column=1, columnspan=4, sticky="ew")
+
+# seach button
+search = Button(text="Seach", command=search)
+search.grid(row=2, column=2, sticky="ew")
 
 window.mainloop()
