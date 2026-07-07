@@ -68,13 +68,12 @@ def save():
         except (FileNotFoundError, json.JSONDecodeError):
             data = {}
 
-        else:
-            data.update(new_data)
+        data.update(new_data)
 
-            with open("data.json", "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=4)
-        finally:
-            clear()
+        with open("data.json", "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
+
+        clear()
 
 
 # clear the fields
@@ -96,12 +95,18 @@ def validations(website, username, password):
 
 def search():
     search_text = website_textbox.get()
-    with open("data.json", "r", encoding="utf-8") as file:
-                data = json.load(file)
-    for website_name in data:
-         if website_name == search_text:
-              print(f"Found match: {data[website_name]} for {website_name}")
-    # return True
+    try:
+        with open("data.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        messagebox.showinfo(title="Error", message="Data file not found")
+    else:
+        if search_text in data:
+            email = data[search_text]["email"]
+            password = data[search_text]["password"]
+            messagebox.showinfo(title=search_text, message=f"Email: {email}\nPassword: {password}")
+        else:
+            messagebox.showinfo(title="Not Found", message=f"No details for {search_text} in your records")
     
 
 # creating the window
@@ -148,8 +153,8 @@ generate_password.grid(row=4, column=2, sticky="ew")
 add_pswd = Button(text="Add", command=save)
 add_pswd.grid(row=5, column=1, columnspan=4, sticky="ew")
 
-# seach button
-search = Button(text="Seach", command=search)
+# search button
+search = Button(text="Search", command=search)
 search.grid(row=2, column=2, sticky="ew")
 
 window.mainloop()
