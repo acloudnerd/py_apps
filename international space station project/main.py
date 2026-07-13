@@ -30,7 +30,7 @@ data = response.json()
 sunset = data["results"]["sunset"]
 sunrise = data["results"]["sunrise"]
 
-print(type(sunrise), sunset)
+print(sunrise, sunset)
 
 # print(datetime.now())
 
